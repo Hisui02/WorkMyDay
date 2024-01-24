@@ -1,0 +1,91 @@
+// schema.prisma
+//TODO: Add inuque id to history manage workout and exercise repetance
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Exercise {
+  id                       String                     @id @default(cuid())
+  title                    String
+  notes                    String?
+  user                     User                       @relation(fields: [userId], references: [id])
+  userId                   String
+  Workouts                 Workout?                   @relation(fields: [workoutsId], references: [id])
+  workoutsId               String?
+  WorkoutsHistoryExercises WorkoutsHistoryExercises[]
+
+  @@map(name: "exercises")
+}
+
+model User {
+  id                       String                     @id @default(cuid())
+  name                     String
+  createdAt                DateTime                   @default(now()) @map(name: "created_at")
+  updatedAt                DateTime                   @updatedAt @map(name: "updated_at")
+  Exercise                 Exercise[]
+  Workouts                 Workout[]
+  WorkoutsHistory          WorkoutsHistory[]
+  WorkoutsHistoryExercises WorkoutsHistoryExercises[]
+
+  @@map(name: "users")
+}
+
+model Workout {
+  id                       String                     @id @default(cuid())
+  name                     String
+  createdAt                DateTime                   @default(now()) @map(name: "created_at")
+  updatedAt                DateTime                   @updatedAt @map(name: "updated_at")
+  Exercise                 Exercise[]
+  user                     User                       @relation(fields: [userId], references: [id])
+  userId                   String
+  WorkoutsHistory          WorkoutsHistory?           @relation(fields: [workoutsHistoryId], references: [id])
+  workoutsHistoryId        String?
+  WorkoutsHistoryExercises WorkoutsHistoryExercises[]
+
+  @@map(name: "workouts")
+}
+
+model WorkoutsHistory {
+  id        String    @id @default(cuid())
+  date      DateTime  @default(now())
+  workout   Workout[]
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+  updatedAt DateTime  @updatedAt @map(name: "updated_at")
+
+  @@map(name: "workoutsHistory")
+}
+
+model WorkoutsHistoryExercises {
+  workoutId  String
+  exerciseId String
+  workout    Workout  @relation(fields: [workoutId], references: [id])
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  reps       Int
+  weight     Decimal
+  RIR        Int?     @default(0)
+  RPE        RPE      @relation(fields: [rPEId], references: [id])
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  rPEId      String
+
+  @@id([workoutId, exerciseId])
+  @@map(name: "workoutsHistoryExercises")
+}
+
+model RPE {
+  id                       String                     @id @default(cuid())
+  descrip                  String
+  WorkoutsHistoryExercises WorkoutsHistoryExercises[]
+
+  @@map(name: "RPEs")
+}
