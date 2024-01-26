@@ -15,7 +15,8 @@
 				"steoates.autoimport",
 				"VisualStudioExptTeam.vscodeintellicode",
 				"esbenp.prettier-vscode",
-				"bradlc.vscode-tailwindcss"
+				"bradlc.vscode-tailwindcss",
+				"Prisma.prisma"
 			]
 		}
 	}

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -54,7 +55,13 @@ export function AddExerciseDialog() {
         </DialogHeader>
 
         <Form {...form}>
-          <form action={addExercise} className="space-y-8">
+          <form
+            action={addExercise}
+            onSubmit={() => {
+              form.reset();
+            }}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -87,7 +94,9 @@ export function AddExerciseDialog() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <DialogClose asChild>
+              <Button type="submit">Submit</Button>
+            </DialogClose>
           </form>
         </Form>
       </DialogContent>
