@@ -23,3 +23,15 @@ export async function addExercise(values: FormData) {
     }
   }
 }
+
+export async function deleteExercise(id: string) {
+  try {
+    await prisma.exercise.delete({ where: { id: id } });
+    revalidatePath("/exercises");
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      // The .code property can be accessed in a type-safe manner
+      console.log(e);
+    }
+  }
+}
