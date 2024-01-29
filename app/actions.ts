@@ -1,13 +1,14 @@
 "use server";
 
+import { Exercise } from "@/interfaces";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function addExercise(values: FormData) {
+export async function addExercise(values: Exercise) {
   const exercise: Prisma.ExerciseCreateInput = {
-    title: values.get("title") as string,
-    notes: values.get("notes") as string,
+    title: values.title as string,
+    notes: values.notes as string,
     user: { connect: { id: "clrs721n80000t3gglthpe61f" } },
   };
 
@@ -20,6 +21,12 @@ export async function addExercise(values: FormData) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
       console.log(e);
+      return {
+        error: {
+          title: "Error",
+          cause: e.meta?.cause,
+        },
+      };
     }
   }
 }
@@ -32,6 +39,12 @@ export async function deleteExercise(id: string) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
       console.log(e);
+      return {
+        error: {
+          title: "Error",
+          cause: e.meta?.cause,
+        },
+      };
     }
   }
 }
