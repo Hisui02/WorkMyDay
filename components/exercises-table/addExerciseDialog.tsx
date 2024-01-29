@@ -24,6 +24,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { addExercise } from "@/app/actions";
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -41,8 +43,20 @@ export function AddExerciseDialog() {
     },
   });
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(form.formState.isSubmitting);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(form.formState.isSubmitting);
+    addExercise(values).then(() => {
+      setIsOpen(false);
+      setIsSubmitting(false);
+      form.reset();
+    });
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>Add</Button>
       </DialogTrigger>
@@ -55,13 +69,7 @@ export function AddExerciseDialog() {
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            action={addExercise}
-            onSubmit={() => {
-              form.reset();
-            }}
-            className="space-y-8"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="title"
@@ -94,9 +102,7 @@ export function AddExerciseDialog() {
                 </FormItem>
               )}
             />
-            <DialogClose asChild>
-              <Button type="submit">Submit</Button>
-            </DialogClose>
+            <Button>{isSubmitting ? "Saving..." : "Save"}</Button>
           </form>
         </Form>
       </DialogContent>

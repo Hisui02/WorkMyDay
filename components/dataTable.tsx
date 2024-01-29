@@ -1,13 +1,5 @@
 "use client";
 
-interface Props {
-  exercises: {
-    id: string;
-    title: string;
-    notes: string | null;
-  }[];
-}
-
 import {
   ColumnDef,
   flexRender,

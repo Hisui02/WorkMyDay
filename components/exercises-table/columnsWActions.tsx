@@ -10,20 +10,18 @@ import { deleteExercise } from "@/app/actions";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Exercise = {
+
+interface Exercise {
   id: string;
   title: string;
   notes: string | null;
-};
+}
 
-export const columns: ColumnDef<Exercise>[] = [
-  {
-    id: "id",
-  },
+export const columnsWActions: ColumnDef<Exercise>[] = [
   {
     accessorKey: "title",
     header: "Title",
-    size: 40,
+    size: 70,
   },
   {
     accessorKey: "notes",
@@ -46,7 +44,8 @@ export const columns: ColumnDef<Exercise>[] = [
           <Button
             variant={"destructive"}
             onClick={() => {
-              deleteExercise(row.original.id);
+              
+              deleteExercise(row.original.id as string);
             }}
           >
             <FaTrashAlt />

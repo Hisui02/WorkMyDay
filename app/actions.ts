@@ -1,13 +1,14 @@
 "use server";
 
+import { Exercise } from "@/interfaces";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function addExercise(values: FormData) {
+export async function addExercise(values: Exercise) {
   const exercise: Prisma.ExerciseCreateInput = {
-    title: values.get("title") as string,
-    notes: values.get("notes") as string,
+    title: values.title as string,
+    notes: values.notes as string,
     user: { connect: { id: "clrs721n80000t3gglthpe61f" } },
   };
 

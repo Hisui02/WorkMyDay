@@ -1,5 +1,5 @@
 import DataTable from "@/components/dataTable";
-import { columns } from "@/components/exercises-table/columns";
+import { columnsWActions } from "@/components/exercises-table/columnsWActions";
 import prisma from "@/lib/prisma";
 
 async function getExercises(user: string) {
@@ -14,7 +14,7 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} showAddButton />
+      <DataTable columns={columnsWActions} data={data} showAddButton />
     </div>
   );
 }
