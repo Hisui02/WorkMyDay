@@ -21,6 +21,12 @@ export async function addExercise(values: Exercise) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
       console.log(e);
+      return {
+        error: {
+          title: "Error",
+          cause: e.meta?.cause,
+        },
+      };
     }
   }
 }
@@ -33,6 +39,12 @@ export async function deleteExercise(id: string) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
       console.log(e);
+      return {
+        error: {
+          title: "Error",
+          cause: e.meta?.cause,
+        },
+      };
     }
   }
 }

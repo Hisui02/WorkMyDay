@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,8 +23,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { addExercise } from "@/app/actions";
-import { useState } from "react";
-import { useFormStatus } from "react-dom";
+import { Exercise } from "@/interfaces";
+import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -34,7 +33,11 @@ const formSchema = z.object({
   notes: z.string().optional(),
 });
 
-export function AddExerciseDialog() {
+interface Props {
+  setData: (values: z.infer<typeof formSchema>) => void;
+}
+
+export function AddExerciseDialog({ setData }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,20 +46,28 @@ export function AddExerciseDialog() {
     },
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(form.formState.isSubmitting);
+  interface ExerciseWId extends Exercise {
+    id: string;
+  }
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(form.formState.isSubmitting);
-    addExercise(values).then(() => {
-      setIsOpen(false);
-      setIsSubmitting(false);
-      form.reset();
-    });
+  const {toast} = useToast();
+
+  const onSubmit = async (values: Exercise) => {
+    setData({ id: "temp", ...values } as ExerciseWId);
+    const res = await addExercise(values);
+    console.log(!!res)
+    if (res) {
+      toast({
+        variant:"destructive",
+        title:res.error.title,
+        description: res.error.cause as string,
+      });
+    }
+    form.reset();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button>Add</Button>
       </DialogTrigger>
@@ -79,9 +90,6 @@ export function AddExerciseDialog() {
                   <FormControl>
                     <Input placeholder="title" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is the name of your exercise.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -95,14 +103,15 @@ export function AddExerciseDialog() {
                   <FormControl>
                     <Textarea placeholder="notes" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Give some info about the exercise (optional).
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button>{isSubmitting ? "Saving..." : "Save"}</Button>
+            <DialogClose asChild>
+              <Button type="submit" className="text-secondary-foreground">
+                Save
+              </Button>
+            </DialogClose>
           </form>
         </Form>
       </DialogContent>
