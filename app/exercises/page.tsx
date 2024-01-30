@@ -1,4 +1,5 @@
-import ExercisesTable from "@/components/exercises-table/dataTable";
+import ExercisesTable from "@/components/exercises/dataTable";
+import { ExerciseWId } from "@/interfaces";
 import prisma from "@/lib/prisma";
 
 async function getExercises(user: string) {
@@ -9,7 +10,7 @@ async function getExercises(user: string) {
 }
 
 export default async function Page() {
-  const data = await getExercises("clrs721n80000t3gglthpe61f");
+  const data:ExerciseWId[] = await getExercises("clrs721n80000t3gglthpe61f");
 
   return (
     <div className="container mx-auto py-10">

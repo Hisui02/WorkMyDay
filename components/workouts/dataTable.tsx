@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AddExerciseDialog } from "./addExerciseDialog";
+import { AddExerciseDialog, AddWorkoutDialog } from "./addWorkoutDialog";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -38,26 +38,26 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { ExerciseWId } from "@/interfaces";
+import { Exercise, Workout } from "@prisma/client";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 interface Props {
-  data: ExerciseWId[];
+  data: Workout[];
+  exercises:Exercise[]
 }
 
-export default function DataTable({ data: fullData }: Props) {
-  const columns: ColumnDef<ExerciseWId>[] = [
+export default function DataTable({ data: fullData,exercises }: Props) {
+  const columns: ColumnDef<Workout>[] = [
     {
-      accessorKey: "title",
-      header: "Title",
-      size: 70,
+      accessorKey: "name",
+      header: "Name",
     },
-    {
-      accessorKey: "notes",
-      header: "Notes",
-    },
+    // {
+    //   accessorKey: "notes",
+    //   header: "Notes",
+    // },
     {
       accessorKey: "actions",
       header: () => {
@@ -191,7 +191,7 @@ export default function DataTable({ data: fullData }: Props) {
       </div>
 
       <div className="py-4">
-        <AddExerciseDialog setData={addTableData} />
+        <AddWorkoutDialog setData={addTableData} exercises={exercises} />
       </div>
     </>
   );
